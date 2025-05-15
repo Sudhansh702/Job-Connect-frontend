@@ -1,11 +1,6 @@
 import React, { useEffect, useContext } from 'react';
 import { Outlet, Navigate, useLocation } from 'react-router-dom';
 
-
-import { Briefcase } from 'lucide-react';
-
-import Sidebar from '../navbar/SideBar';
-import BottomNav from '../navbar/BottomNav';
 import Header from '../navbar/header';
 import { Context } from '../main';
 
