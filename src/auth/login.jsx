@@ -1,12 +1,14 @@
 import React from "react";
 import { Briefcase } from 'lucide-react';
 import axios from "axios";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 import { Context } from '../main';
 
 export default function LoginPage() {
     const { isAuthorized, setIsAuthorized } = React.useContext(Context);
+    const navigate = useNavigate();
+    const location = useLocation();
 
     const [logInData, setLogInData] = React.useState({
         username: '',
@@ -22,17 +24,23 @@ export default function LoginPage() {
                 toast.error('Please fill all fields');
                 return;
             }
-            const res = await axios.post('http://localhost:5000/login', {
+            const res = await axios.post(`${import.meta.env.VITE_API_URL}/login`, {
                 logInData
             });
 
             localStorage.setItem('token', res.data.token);
             toast.success("Logged in successfully!");
             setIsAuthorized(true)
+            handleLoginSuccess();
         } catch (error) {
             toast.error(error.response.data.error)
         }
     }
+
+    const handleLoginSuccess = () => {
+        const lastPath = localStorage.getItem('lastPath') || '/dashboard';
+        navigate(lastPath, { replace: true });
+    };
 
     if (isAuthorized) {
         return <Navigate to={'/'} />
@@ -41,7 +49,7 @@ export default function LoginPage() {
         <div className="flex justify-center items-center h-screen bg-gray-50 flex-col">
             <div className="text-center mt-10 flex gap-2.5 content-center items-center p-7">
                 <Briefcase className="text-primary text-3xl text-blue-500" />
-                <h1 className="text-center text-gray-800 text-2xl font-bold">JobMatch</h1>
+                <h1 className="text-center text-gray-800 text-2xl font-bold">JobConnect</h1>
             </div>
             <div className="w-full max-w-md p-5 bg-white rounded-lg shadow-md">
                 <h2 className="text-center text-gray-600 text-lg mb-5">Welcome back</h2>

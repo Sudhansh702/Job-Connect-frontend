@@ -7,6 +7,20 @@ import { Context } from '../main'
 
 const JobDetails = () => {
   const { user } = useContext(Context);
+   if (!user || user.type !== 'Job Seeker') {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[300px]">
+      <h1 className="text-xl font-semibold text-red-600 mb-2">Access Denied</h1>
+      <p className="text-gray-700 mb-4">Only Job Seeker can apply for jobs.</p>
+      <a
+        href="/"
+        className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+      >
+        Go to Home
+      </a>
+      </div>
+    );
+  }
 
   const { jobId } = useParams();
   const [job, setJob] = useState(null);
@@ -16,7 +30,7 @@ const JobDetails = () => {
   useEffect(() => {
     async function fetchjob() {
       try {
-        const res = await axios.get(`http://localhost:5000/api/job/?jobId=${jobId}`)
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/job/?jobId=${jobId}`)
         if (!res || !res.data) throw new Error('Error fetching jobs');
         setJob(res.data)
       } catch (err) {
@@ -46,7 +60,7 @@ const JobDetails = () => {
     try {
       const token = localStorage.getItem('token');
       const res = await axios.post(
-        'http://localhost:5000/applyjob',  // Added /api prefix
+        '${import.meta.env.VITE_API_URL}/applyjob',  // Added /api prefix
         formData,
         {
           headers: {

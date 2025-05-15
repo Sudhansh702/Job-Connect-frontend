@@ -81,7 +81,7 @@ const JobCard = ({
           <button
             onClick={() => {
               if (window.confirm('Are you sure you want to delete this job?')) {
-                axios.delete(`http://localhost:5000/deleteapplication/${jobId}`, {
+                axios.delete(`${import.meta.env.VITE_API_URL}/deleteapplication/${jobId}`, {
                   headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                   },
@@ -112,6 +112,3 @@ const JobCard = ({
 };
 
 export default JobCard;
-
-
-// Removed inline styles and moved them to a CSS class

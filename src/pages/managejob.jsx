@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect ,useContext} from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import { Context } from '../main';
 
 const ManageJob = () => {
+  const {user} = useContext(Context);
   // for post edit
   const [isEditing, setIsEditing] = useState(false);
   const [editJob, setEditJob] = useState({
@@ -28,12 +30,12 @@ const ManageJob = () => {
     // Fetch job details and applicants (replace with your API endpoints)
     const fetchJobData = async () => {
       try {
-        const jobResponse = await axios.get(`http://localhost:5000/api/job/?jobId=${jobId}`)
+        const jobResponse = await axios.get(`${import.meta.env.VITE_API_URL}/api/job/?jobId=${jobId}`)
         const jobData = jobResponse.data;
         setJobDetails(jobData);
         // console.log(jobData);
 
-        const applicantsResponse = await axios.get(`http://localhost:5000/applicants/?jobId=${jobId}`, {
+        const applicantsResponse = await axios.get(`${import.meta.env.VITE_API_URL}/applicants/?jobId=${jobId}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
@@ -54,7 +56,7 @@ const ManageJob = () => {
   const handleApproveApplicant = async (applicationId) => {
     try {
       await axios.post(
-        `http://localhost:5000/applicants/${applicationId}/approve`,
+        `${import.meta.env.VITE_API_URL}/applicants/${applicationId}/approve`,
         {},
         {
           headers: {
@@ -108,6 +110,20 @@ const ManageJob = () => {
   }
 
 
+  if(jobDetails.postedBy !== user._id) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[300px]">
+        <h1 className="text-xl font-semibold text-red-600 mb-2">Access Denied</h1>
+        <p className="text-gray-700 mb-4">You are not authorized to view this job.</p>
+        <a
+          href="/"
+          className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+        >
+          Go to Home
+        </a>
+      </div>
+    )}
+
 
   // return statement is here
   return (
@@ -142,7 +158,7 @@ const ManageJob = () => {
           <button
             onClick={()=> {
               if (window.confirm('Are you sure you want to delete this job?')) {
-                axios.delete(`http://localhost:5000/api/deletejob/${jobId}`, {
+                axios.delete(`${import.meta.env.VITE_API_URL}/api/deletejob/${jobId}`, {
                   headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                   },
@@ -203,23 +219,22 @@ const ManageJob = () => {
         <p className="text-gray-500 text-sm">No applicants for this job yet.</p>
       )}
 
-      {/* this is the job edit model */}
-      {isEditing && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white max-w-3xl w-full p-8 rounded-2xl shadow-lg relative">
-            <button
-              onClick={() => setIsEditing(false)}
-              className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-xl"
-            >
-              ×
-            </button>
-            <h2 className="text-2xl font-bold mb-6 text-gray-800">Edit Job</h2>
-            <form
-              className="space-y-6"
-              onSubmit={async (e) => {
+        {isEditing && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white max-w-3xl w-full p-8 rounded-2xl shadow-lg mt-12 relative" style={{ maxHeight: '90vh', overflowY: 'auto' }}>
+          <button
+            onClick={() => setIsEditing(false)}
+            className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-xl"
+          >
+            ×
+          </button>
+          <h2 className="text-2xl font-bold mb-6 text-gray-800">Edit Job</h2>
+          <form
+            className="space-y-6"
+            onSubmit={async (e) => {
                 e.preventDefault();
                 try {
-                  const response = await axios.put(`http://localhost:5000/api/editjob/${jobId}`, editJob, {
+                  const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/editjob/${jobId}`, editJob, {
                     headers: {
                       Authorization: `Bearer ${localStorage.getItem('token')}`,
                     },

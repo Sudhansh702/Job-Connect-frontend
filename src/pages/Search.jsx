@@ -1,4 +1,3 @@
-
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import axios from 'axios'
 import { toast } from 'react-toastify'
@@ -15,7 +14,7 @@ export default function Search() {
   useEffect(() => {
     async function fetchJobs() {
       try {
-        const res = await axios.get('http://localhost:5000/api/jobs', {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/jobs`, {
           params: { userId: user._id }
         })
         // console.log(res.data)
@@ -55,7 +54,7 @@ export default function Search() {
 
     async function searchJobs() {
       try {
-        const res = await axios.get('http://localhost:5000/api/jobs/', {
+        const res = await axios.get('${import.meta.env.VITE_API_URL}/api/jobs/', {
           params: { keywords, location, userId: user._id }
         });
         console.log(res.data);

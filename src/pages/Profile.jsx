@@ -1,63 +1,131 @@
+import { useContext, useEffect } from 'react';
+import { Context } from '../main'
 import { toast } from 'react-toastify';
-import {Navigate } from "react-router-dom";
-import { useContext } from 'react';
-import {Context} from '../main'
+import { useNavigate } from 'react-router-dom';
+// export default Profile;
+import { useState } from "react";
+import Dashboard from './dashboard';
+import {
+  User,
+  Mail,
+  MapPin,
+  Briefcase,
+  Building2,
+  Edit2,
+  Check,
+} from "lucide-react";
 
-const Profile = () => {
+const ProfilePage = () => {
+  const [isEditing, setIsEditing] = useState(false);
+  const { user, setUser, isAuthorized, setIsAuthorized } = useContext(Context);
+  const navigate = useNavigate();
 
-  const {isAuthorized,setIsAuthorized ,user,setUser}  = useContext(Context)
+  useEffect(() => {
+    if (!isAuthorized || !user) {
+      navigate('/login');
+    }
+  }, [isAuthorized, user]);
+
+  // Safety check - return null while checking authorization
+  if (!user || !isAuthorized) {
+    return null;
+  }
+
+  const toggleEdit = () => setIsEditing(!isEditing);
+
+  // Profile form handlers
+  const handleInputChange = (e) => {
+    setUser((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
 
   function logout() {
     localStorage.removeItem('token'); 
-    toast.success('You are loged out.')
-    setUser(null)
-    setIsAuthorized(false)
-  } 
-  if(!isAuthorized || !user){
-    return <Navigate path="/login"/>
+    toast.success('You are logged out.')
+    setUser(null);
+    setIsAuthorized(false);
+    navigate('/login');
   }
-
-  return (
-    <div className="min-h-screen  flex justify-center p-4">
-      <div className="bg-white shadow-x rounded-2xl p-8 max-w-md w-full">
-        <div className="flex flex-col items-center">
-          <div className="w-28 h-28 bg-blue-100 rounded-full flex items-center justify-center text-4xl font-bold text-blue-600">
-            {user?.username?.charAt(0) || 'JC'}
-          </div>
-          <h1 className="mt-4 text-2xl font-semibold text-gray-800">{user.username}</h1>
-          <p className="text-gray-500">{user.email}</p>
+  // Render functions for tab content
+  const renderProfileInfo = () => (
+    <div className="space-y-6 max-w-4xl mx-auto p-4">
+      <div className="flex flex-col md:flex-row md:items-center md:space-x-6">
+        <div className="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden bg-gray-200">
+          {user.profilePic ? (
+            <img src={profile.profilePic} alt="Profile" className="w-full h-full object-cover" />
+          ) : (
+            <User className="w-full h-full text-gray-400" />
+          )}
         </div>
-
-        <div className="mt-6 border-t pt-4 text-sm text-gray-600 space-y-2">
-          <div className="flex justify-between">
-            <span>Username</span>
-            <span className="font-medium text-gray-800">{user.username}</span>
+        <div className="flex-1 mt-4 md:mt-0">
+          <div className="flex items-center space-x-3">
+            <h2 className="text-3xl font-semibold text-gray-800">{user.fullName}</h2>
+            <span className="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-sm font-medium">
+              {user.type}
+            </span>
           </div>
-          <div className="flex justify-between">
-            <span>Email</span>
-            <span className="font-medium text-gray-800">{user.email}</span>
-          </div>
-          <div className="flex justify-between">
-            <span>Full Name</span>
-            <span className="font-medium text-gray-800">{user.fullName}</span>
-          </div>
-          <div className="flex justify-between">
-            <span>Title</span>
-            <span className="font-medium text-gray-800">{user.professionalTitle}</span>
+          <div className="mt-2 space-y-1 text-gray-600">
+            <div className="flex items-center space-x-2">
+              <Mail className="w-4 h-4" />
+              {isEditing ? (
+                <input
+                  type="email"
+                  name="email"
+                  value={user.email}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded px-2 py-1 text-sm w-full max-w-xs"
+                />
+              ) : (
+                <p>{user.email}</p>
+              )}
+            </div>
+            <div className="flex items-center space-x-2">
+              <MapPin className="w-4 h-4" />
+              {isEditing ? (
+                <input
+                  type="text"
+                  name="location"
+                  value={user.location}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded px-2 py-1 text-sm w-full max-w-xs"
+                />
+              ) : (
+                <p>{user.location}</p>
+              )}
+            </div>
           </div>
         </div>
-
-        <div className="mt-6 flex gap-3">
-          {/* <button className="w-full bg-blue-600 text-white rounded-lg py-2 font-medium hover:bg-blue-700 transition">
-        Edit Profile
-      </button> */}
-          <button onClick={logout} className="w-full bg-gray-200 text-gray-800 rounded-lg py-2 font-medium hover:bg-gray-300 transition">
-            Logout
-          </button>
+        <div className="mt-4 md:mt-0">
+          {/* <button
+            onClick={toggleEdit}
+            className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 focus:outline-none"
+          >
+            {isEditing ? <Check className="w-4 h-4" /> : <Edit2 className="w-4 h-4" />}
+            <span>{isEditing ? "Save" : "Edit"}</span>
+          </button> */}
+          
+           <button onClick={logout} className="w-full mt-1 bg-gray-200 text-gray-800 rounded-lg p-2 font-medium hover:bg-gray-300 transition">
+             Logout
+           </button>
         </div>
       </div>
+
+
+      {/* Posted jobs */}
+
+    </div>
+  );
+
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <main className="py-6 px-4">
+        {renderProfileInfo()}
+        <Dashboard />
+      </main>
     </div>
   );
 };
 
-export default Profile;
+export default ProfilePage;
+
+
