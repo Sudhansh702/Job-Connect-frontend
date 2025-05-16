@@ -54,7 +54,7 @@ export default function Search() {
 
     async function searchJobs() {
       try {
-        const res = await axios.get('${import.meta.env.VITE_API_URL}/api/jobs/', {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/jobs/`, {
           params: { keywords, location, userId: user._id }
         });
         console.log(res.data);

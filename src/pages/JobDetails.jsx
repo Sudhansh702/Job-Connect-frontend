@@ -60,7 +60,7 @@ const JobDetails = () => {
     try {
       const token = localStorage.getItem('token');
       const res = await axios.post(
-        '${import.meta.env.VITE_API_URL}/applyjob',  // Added /api prefix
+        `${import.meta.env.VITE_API_URL}/applyjob`,  
         formData,
         {
           headers: {
