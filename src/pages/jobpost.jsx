@@ -3,6 +3,7 @@ import { Context } from '../main';
 import { toast } from 'react-toastify'
 import axios from "axios";
 import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 
 export default function JobPost() {
@@ -76,7 +77,8 @@ export default function JobPost() {
         location: '',
         salary: '',
         tags: [],})
-        window.location.reload('/')
+        const navigate = useNavigate();
+        navigate('/profile');
     } catch (error) {
       toast.error('Error posting Job')
       console.log(error)

@@ -1,23 +1,23 @@
 import { toast } from 'react-toastify'
 import axios from 'axios'
-import { useParams } from "react-router-dom";
+import { useParams ,useNavigate} from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 
 import { Context } from '../main'
 
 const JobDetails = () => {
   const { user } = useContext(Context);
-   if (!user || user.type !== 'Job Seeker') {
+  if (!user || user.type !== 'Job Seeker') {
     return (
       <div className="flex flex-col items-center justify-center min-h-[300px]">
-      <h1 className="text-xl font-semibold text-red-600 mb-2">Access Denied</h1>
-      <p className="text-gray-700 mb-4">Only Job Seeker can apply for jobs.</p>
-      <a
-        href="/"
-        className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-      >
-        Go to Home
-      </a>
+        <h1 className="text-xl font-semibold text-red-600 mb-2">Access Denied</h1>
+        <p className="text-gray-700 mb-4">Only Job Seeker can apply for jobs.</p>
+        <a
+          href="/"
+          className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+        >
+          Go to Home
+        </a>
       </div>
     );
   }
@@ -67,7 +67,7 @@ const JobDetails = () => {
     try {
       const token = localStorage.getItem('token');
       const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/applyjob`,  
+        `${import.meta.env.VITE_API_URL}/applyjob`,
         formData,
         {
           headers: {
@@ -81,6 +81,8 @@ const JobDetails = () => {
       console.log("Application Submitted:", form);
       setMessage("Application submitted successfully!");
       setForm({ name: "", email: "", cover: "", resume: null });
+      const navigate = useNavigate();
+      navigate('/profile');
     } catch (err) {
       toast.error(err.response?.data?.message || 'Error applying for the job');
       console.error('Error:', err.response?.data || err.message);
@@ -94,6 +96,7 @@ const JobDetails = () => {
       <div className="bg-white rounded-2xl shadow p-6 mb-8">
         <h1 className="text-3xl font-bold mb-2">{job.title}</h1>
         <p className="text-gray-700 mb-4">{job.description}</p>
+        <p className="text-gray-700 mb-4">By: {job.postedByName}</p>
         <div className="text-sm text-gray-600 space-y-1 mb-4">
           <p><strong>Type:</strong> {job.type}</p>
           <p><strong>Salary:</strong> {job.salary}</p>
