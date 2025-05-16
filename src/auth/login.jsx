@@ -61,7 +61,7 @@ export default function LoginPage() {
                             type="text"
                             id="username"
                             name="username"
-                            placeholder="johndoe"
+                            placeholder="Name"
                             onChange={(e) => setLogInData({ ...logInData, username: e.target.value })}
                             className="w-full p-2 border border-gray-300 rounded-md text-sm"
                         />

@@ -61,7 +61,7 @@ export default function Register() {
               type="text"
               id="username"
               name="username"
-              placeholder="johndoe"
+              placeholder="Name"
               onChange={(e) => setUserData({ ...userData, username: e.target.value })}
               className="w-full mt-1 p-2 border border-gray-300 rounded"
             />
@@ -83,7 +83,7 @@ export default function Register() {
               type="email"
               id="email"
               name="email"
-              placeholder="john@example.com"
+              placeholder="name@gmail.com"
               onChange={(e) => setUserData({ ...userData, email: e.target.value })}
               className="w-full mt-1 p-2 border border-gray-300 rounded"
             />
@@ -121,7 +121,7 @@ export default function Register() {
               type="text"
               id="fullName"
               name="fullName"
-              placeholder="John Doe"
+              placeholder="Full Name"
               onChange={(e) => setUserData({ ...userData, fullName: e.target.value })}
               className="w-full mt-1 p-2 border border-gray-300 rounded"
             />
