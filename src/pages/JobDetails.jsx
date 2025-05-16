@@ -44,8 +44,15 @@ const JobDetails = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (form.resume && !['image/png', 'image/jpeg', 'image/jpg'].includes(form.resume.type)) {
-      setMessage("Invalid resume format. Only png, jpeg, jpg are allowed.");
+    if (
+      form.resume &&
+      ![
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      ].includes(form.resume.type)
+    ) {
+      setMessage("Invalid resume format. Only PDF, DOC, DOCX are allowed.");
       return;
     }
 
@@ -133,11 +140,34 @@ const JobDetails = () => {
         />
 
         <div>
-          <label className="block mb-1 text-sm font-medium">Upload Resume (PDF, DOC, DOCX only)</label>
+          <label className="block mb-1 text-sm font-medium">Upload Resume (PDF, DOC, DOCX only, ≤ 3MB)</label>
           <input
             type="file"
-            accept=".png,.jpg,.jpeg"
-            onChange={(e) => setForm({ ...form, resume: e.target.files[0] })}
+            accept=".pdf,.doc,.docx"
+            onChange={(e) => {
+              const file = e.target.files[0];
+              if (file) {
+                const allowedTypes = [
+                  'application/pdf',
+                  'application/msword',
+                  'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+                ];
+                if (!allowedTypes.includes(file.type)) {
+                  setMessage("Invalid resume format. Only PDF, DOC, DOCX are allowed.");
+                  setForm({ ...form, resume: null });
+                  e.target.value = "";
+                  return;
+                }
+                if (file.size > 3 * 1024 * 1024) {
+                  setMessage("File size must be 3MB or less.");
+                  setForm({ ...form, resume: null });
+                  e.target.value = "";
+                  return;
+                }
+                setMessage("");
+                setForm({ ...form, resume: file });
+              }
+            }}
             className="w-full border rounded-md px-4 py-2"
             required
           />
