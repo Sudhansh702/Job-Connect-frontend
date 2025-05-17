@@ -1,11 +1,12 @@
 import { toast } from 'react-toastify'
 import axios from 'axios'
-import { useParams ,useNavigate} from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 
 import { Context } from '../main'
 
 const JobDetails = () => {
+  const navigate = useNavigate();
   const { user } = useContext(Context);
   if (!user || user.type !== 'Job Seeker') {
     return (
@@ -81,7 +82,6 @@ const JobDetails = () => {
       console.log("Application Submitted:", form);
       setMessage("Application submitted successfully!");
       setForm({ name: "", email: "", cover: "", resume: null });
-      const navigate = useNavigate();
       navigate('/profile');
     } catch (err) {
       toast.error(err.response?.data?.message || 'Error applying for the job');
