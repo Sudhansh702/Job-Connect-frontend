@@ -1,4 +1,4 @@
-import {  useState ,useContext} from 'react';
+import { useState, useContext } from 'react';
 import { Context } from '../main';
 import { toast } from 'react-toastify'
 import axios from "axios";
@@ -7,18 +7,19 @@ import { useNavigate } from 'react-router-dom';
 
 
 export default function JobPost() {
+  const navigate = useNavigate();
   const { user } = useContext(Context);
   if (!user || user.type !== 'Recruiter') {
     return (
       <div className="flex flex-col items-center justify-center min-h-[300px]">
-      <h1 className="text-xl font-semibold text-red-600 mb-2">Access Denied</h1>
-      <p className="text-gray-700 mb-4">Only recruiters can post jobs.</p>
-      <a
-        href="/"
-        className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-      >
-        Go to Home
-      </a>
+        <h1 className="text-xl font-semibold text-red-600 mb-2">Access Denied</h1>
+        <p className="text-gray-700 mb-4">Only recruiters can post jobs.</p>
+        <a
+          href="/"
+          className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+        >
+          Go to Home
+        </a>
       </div>
     );
   }
@@ -46,46 +47,47 @@ export default function JobPost() {
     e.preventDefault();
     // console.log('Posting job:', newJob);
     const token = localStorage.getItem('token')
-    if(!token || !newJob.title || !newJob.description || !newJob.type || !newJob.country || !newJob.location || !newJob.city){
+    if (!token || !newJob.title || !newJob.description || !newJob.type || !newJob.country || !newJob.location || !newJob.city) {
       return toast.error('fill all details')
     }
-    if(newJob.title.length < 3 || newJob.description.length < 10 ){
+    if (newJob.title.length < 3 || newJob.description.length < 10) {
       toast.error('title/description too small')
-      return 
+      return
     }
-    if(newJob.title.length > 30 || newJob.description.length >500){
+    if (newJob.title.length > 30 || newJob.description.length > 500) {
       toast.error('title/description too big')
-      return 
+      return
     }
     try {
       // console.log(newJob)
-      await axios.post(`${import.meta.env.VITE_API_URL}/api/postjob`, 
-        newJob, 
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/postjob`,
+        newJob,
         {
-            headers: {
-                Authorization: `Bearer ${token}`, 
-            },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-    );
+      );
       // console.log(res)
       toast.success('Job Posted Successfully')
-      setNewJob({title: '',
+      setNewJob({
+        title: '',
         description: '',
         type: '',
         country: '',
         city: '',
         location: '',
         salary: '',
-        tags: [],})
-        const navigate = useNavigate();
-        navigate('/profile');
+        tags: [],
+      })
+      navigate('/profile');
     } catch (error) {
       toast.error('Error posting Job')
       console.log(error)
     }
   };
 
-  const [tag,setTag] = useState("")
+  const [tag, setTag] = useState("")
   const handleTag = (e) => {
     const { value } = e.target;
     setTag(value);
