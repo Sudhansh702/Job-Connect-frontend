@@ -192,11 +192,25 @@ const ManageJob = () => {
               <p className="text-sm text-gray-600 mb-2">Email: {application.email}</p>
               <p className="text-sm text-gray-600 mb-2">Cover Letter: {application.coverLetter}</p>
               {application.resume && (
-                <img 
-                  src={application.resume} 
-                  alt="Resume" 
-                  className="max-w-full h-auto mb-2 border border-gray-200 rounded"
-                />
+                <div className="mb-4">
+                  <object
+                    data={`${import.meta.env.VITE_API_URL}/view-resume/${application.resume}`}
+                    type="application/pdf"
+                    className="w-full h-[500px] border border-gray-200 rounded"
+                  >
+                    <p>
+                      Unable to display PDF file.{' '}
+                      <a 
+                        href={`${import.meta.env.VITE_API_URL}/view-resume/${application.resume}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:text-blue-800"
+                      >
+                        Open Resume in New Tab
+                      </a>
+                    </p>
+                  </object>
+                </div>
               )}
               <div className="mt-3">
                 {!application.approved ? (

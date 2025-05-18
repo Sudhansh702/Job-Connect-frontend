@@ -48,12 +48,10 @@ const JobDetails = () => {
     if (
       form.resume &&
       ![
-        'application/pdf',
-        'application/msword',
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+        'application/pdf'
       ].includes(form.resume.type)
     ) {
-      setMessage("Invalid resume format. Only PDF, DOC, DOCX are allowed.");
+      setMessage("Invalid resume format. Only PDF are allowed.");
       return;
     }
 
@@ -79,7 +77,6 @@ const JobDetails = () => {
 
       if (!res || !res.data) throw new Error('Error submitting application');
       toast.success("Application Submitted");
-      console.log("Application Submitted:", form);
       setMessage("Application submitted successfully!");
       setForm({ name: "", email: "", cover: "", resume: null });
       navigate('/profile');
@@ -143,17 +140,15 @@ const JobDetails = () => {
         />
 
         <div>
-          <label className="block mb-1 text-sm font-medium">Upload Resume (PDF, DOC, DOCX only, ≤ 3MB)</label>
+          <label className="block mb-1 text-sm font-medium">Upload Resume (PDF, ≤ 3MB)</label>
           <input
             type="file"
-            accept=".pdf,.doc,.docx"
+            accept=".pdf"
             onChange={(e) => {
               const file = e.target.files[0];
               if (file) {
                 const allowedTypes = [
                   'application/pdf',
-                  'application/msword',
-                  'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
                 ];
                 if (!allowedTypes.includes(file.type)) {
                   setMessage("Invalid resume format. Only PDF, DOC, DOCX are allowed.");
